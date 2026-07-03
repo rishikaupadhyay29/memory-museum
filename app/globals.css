@@ -1,0 +1,247 @@
+@import "../styles/tokens.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base Reset ── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-body);
+    background-color: var(--color-obsidian);
+    color: var(--color-marble);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--color-marble);
+  }
+
+  h1 { font-size: var(--text-6xl); }
+  h2 { font-size: var(--text-5xl); }
+  h3 { font-size: var(--text-4xl); }
+  h4 { font-size: var(--text-3xl); }
+  h5 { font-size: var(--text-2xl); }
+  h6 { font-size: var(--text-xl);  }
+
+  p {
+    line-height: var(--leading-relaxed);
+    color: var(--color-mist);
+  }
+
+  ::selection {
+    background: var(--color-gold-muted);
+    color: var(--color-gold-light);
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-obsidian); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-gold-dark);
+    border-radius: var(--radius-full);
+  }
+}
+
+/* ── Glassmorphism Utilities ── */
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-lighter {
+    background: var(--glass-bg-lighter);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-hover {
+    transition: background var(--duration-normal) var(--ease-museum),
+                border-color var(--duration-normal) var(--ease-museum),
+                box-shadow var(--duration-normal) var(--ease-museum);
+  }
+
+  .glass-hover:hover {
+    background: rgba(40, 36, 28, 0.7);
+    border-color: var(--color-border-bright);
+    box-shadow: var(--glass-shadow), var(--shadow-gold-sm);
+  }
+
+  /* ── Gold Accent Border ── */
+  .border-gold {
+    border: 1px solid var(--color-border);
+  }
+
+  .border-gold-bright {
+    border: 1px solid var(--color-border-bright);
+  }
+
+  /* ── Text Hierarchy ── */
+  .text-display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .text-label {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-gold);
+    font-weight: 500;
+  }
+
+  /* ── Gold Gradient Text ── */
+  .text-gold-gradient {
+    background: linear-gradient(
+      135deg,
+      var(--color-gold-light) 0%,
+      var(--color-gold) 50%,
+      var(--color-gold-dark) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Shimmer Effect ── */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface) 25%,
+      var(--color-surface-raised) 50%,
+      var(--color-surface) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* ── Gold Glow ── */
+  .glow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+
+  .glow-gold-text {
+    text-shadow: 0 0 20px rgba(201, 160, 77, 0.5);
+  }
+
+  /* ── Museum Canvas Overlay ── */
+  .canvas-container {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-base);
+  }
+
+  .hud-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-hud);
+    pointer-events: none;
+  }
+
+  .hud-overlay > * {
+    pointer-events: auto;
+  }
+
+  /* ── Invisible scrollbar (museum routes use scroll for camera) ── */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Magnetic Button Base ── */
+  .magnetic {
+    display: inline-flex;
+    position: relative;
+    will-change: transform;
+    transition: transform 0.3s var(--ease-spring);
+  }
+
+  /* ── Animated border ── */
+  .border-animated {
+    position: relative;
+  }
+
+  .border-animated::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      var(--color-gold-dark),
+      var(--color-gold),
+      var(--color-gold-light),
+      var(--color-gold)
+    );
+    background-size: 300% 300%;
+    animation: gradient-rotate 4s ease infinite;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-museum);
+  }
+
+  .border-animated:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ── Keyframes ── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes gradient-rotate {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.02); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes fade-up {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes curtain-reveal {
+  0%   { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0% 0 0); }
+}

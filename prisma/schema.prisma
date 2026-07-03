@@ -1,0 +1,163 @@
+// Memory Museum — Phase 1 schema (Core Museum)
+// Living Museum tables (ProgressionState, ConstructionEvent, HiddenRoom, etc.)
+// are added in a later phase per the approved build order.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum MemoryType {
+  PHOTO
+  VIDEO
+  JOURNAL
+  AUDIO
+  LOCATION
+}
+
+enum UploadJobStatus {
+  QUEUED
+  TRANSCRIBING
+  CAPTIONING
+  EMBEDDING
+  CLUSTERING
+  DONE
+  FAILED
+}
+
+enum ExhibitTheme {
+  GOLD
+  AURORA
+  RAIN
+  NEUTRAL
+}
+
+model User {
+  id              String   @id @default(cuid())
+  clerkId         String   @unique
+  email           String   @unique
+  displayName     String?
+  avatarUrl       String?
+  storageUsedBytes BigInt  @default(0)
+  plan            String   @default("free")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  memories  Memory[]
+  exhibits  Exhibit[]
+  wings     Wing[]
+  people    Person[]
+  uploadJobs UploadJob[]
+
+  @@index([clerkId])
+}
+
+model Wing {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  slug      String
+  iconModel String?
+  positionX Float    @default(0)
+  positionY Float    @default(0)
+  positionZ Float    @default(0)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  exhibits Exhibit[]
+
+  @@unique([userId, slug])
+  @@index([userId])
+}
+
+model Exhibit {
+  id                  String       @id @default(cuid())
+  userId              String
+  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wingId              String?
+  wing                Wing?        @relation(fields: [wingId], references: [id], onDelete: SetNull)
+  title               String
+  description         String?
+  coverMemoryId        String?
+  theme               ExhibitTheme @default(NEUTRAL)
+  order               Int          @default(0)
+  aiGeneratedNarrative String?
+  isPublished         Boolean      @default(false)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  memories Memory[]
+
+  @@index([userId])
+  @@index([wingId])
+}
+
+model Memory {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exhibitId    String?
+  exhibit      Exhibit?   @relation(fields: [exhibitId], references: [id], onDelete: SetNull)
+  type         MemoryType
+  mediaUrl     String?
+  thumbnailUrl String?
+  capturedAt   DateTime?
+  locationLat  Float?
+  locationLng  Float?
+  locationName String?
+  caption      String?
+  aiCaption    String?
+  transcript   String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  people    MemoryPerson[]
+  uploadJob UploadJob?
+
+  @@index([userId, capturedAt])
+  @@index([exhibitId])
+}
+
+model Person {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  relation  String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+
+  memories MemoryPerson[]
+
+  @@index([userId])
+}
+
+model MemoryPerson {
+  memoryId String
+  memory   Memory @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  personId String
+  person   Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([memoryId, personId])
+}
+
+model UploadJob {
+  id        String          @id @default(cuid())
+  memoryId  String          @unique
+  memory    Memory          @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    UploadJobStatus @default(QUEUED)
+  progress  Int             @default(0)
+  error     String?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([userId, status])
+}
