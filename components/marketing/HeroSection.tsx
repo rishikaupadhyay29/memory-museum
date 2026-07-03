@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { Button } from "@/components/ui/primitives/Button";
+import { SmartCTAButton } from "@/components/marketing/SmartCTAButton";
 
 // ── Ambient particle field ────────────────────────────────────────────────────
 
@@ -226,12 +227,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-center justify-center flex-wrap gap-4"
           >
-            <Link href="/sign-up">
-              <Button variant="gold" size="lg" className="group min-w-44">
-                Begin your museum
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Button>
-            </Link>
+            <SmartCTAButton label="Begin your museum" className="group min-w-44" />
             <Link href="/sign-in">
               <Button variant="glass" size="lg" className="min-w-36">
                 <Play className="w-3.5 h-3.5" />
@@ -296,12 +292,7 @@ export function HeroSection() {
             Your museum starts small — a single entrance hall. Upload your first memory and watch it
             come to life.
           </p>
-          <Link href="/sign-up">
-            <Button variant="gold" size="lg" className="group">
-              Create your museum
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Button>
-          </Link>
+          <SmartCTAButton label="Create your museum" />
         </motion.div>
       </section>
     </main>
