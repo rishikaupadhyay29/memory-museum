@@ -1,6 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
-import { ArrowRight, Upload, Images, DoorOpen, Layers } from "lucide-react";
+import { Upload, Images, DoorOpen, Layers } from "lucide-react";
 import { Button } from "@/components/ui/primitives/Button";
 import { GlassPanel } from "@/components/ui/primitives/GlassPanel";
 import { Badge } from "@/components/ui/primitives/Badge";
@@ -61,19 +61,14 @@ export default async function MuseumLobbyPage() {
           >
             <DoorOpen className="w-4 h-4" />
             Enter Museum
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Button>
 
-          <Button
-            variant="glass"
-            size="lg"
-            className="flex-1 justify-center"
-            disabled
-            title="Memory upload coming soon"
-          >
-            <Upload className="w-4 h-4" />
-            Upload Memory
-          </Button>
+          <Link href="/upload" className="flex-1">
+            <Button variant="glass" size="lg" className="w-full justify-center">
+              <Upload className="w-4 h-4" />
+              Upload Memory
+            </Button>
+          </Link>
         </div>
 
         <GlassPanel padding="none" className="w-full">
